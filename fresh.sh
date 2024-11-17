@@ -24,6 +24,10 @@ fi
 rm -rf $HOME/.zshrc
 ln -sw $HOME/.dotfiles/.zshrc $HOME/.zshrc
 
+# And do the same for the Powerlevel10k config
+rm -rf $HOME/.p10k.zsh
+ln -sw $HOME/.dotfiles/.p10k.zsh $HOME/.p10k.zsh
+
 # Update Homebrew recipes
 brew update
 
