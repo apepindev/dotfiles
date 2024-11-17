@@ -3,7 +3,7 @@ tap "homebrew/bundle"
 tap "homebrew/cask"
 tap "homebrew/services"
 
-# Binaries
+# Binaries/Tools
 brew "libpng"
 brew "libtiff"
 brew "little-cms2"
@@ -70,6 +70,7 @@ cask "jordanbaird-ice"
 cask "monitorcontrol"
 cask "ngrok"
 cask "orbstack"
+cask "rectangle"
 cask "slack"
 cask "tunnelbear"
 cask "whatsapp"
@@ -79,7 +80,6 @@ cask "zed"
 cask "qlmarkdown"
 cask "qlstephen"
 cask "quicklook-json"
-cask "rectangle"
 
 # Fonts
 cask "font-meslo-for-powerlevel10k"
