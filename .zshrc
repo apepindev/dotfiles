@@ -126,7 +126,8 @@ source $ZSH/oh-my-zsh.sh
 
 # Open man pages in Preview.app
 pman () {
-  man -t "${1}" | open -f -a /Applications/Preview.app
+    CMD_NAME=$1
+    whereis -qm $CMD_NAME | xargs cat | mandoc -T pdf | open -f -a /System/Applications/Preview.app
 }
 
 # Load 'fuck' alias
