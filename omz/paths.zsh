@@ -8,8 +8,12 @@ function append_path {
 # Add custom dotfiles binaries to path
 append_path $DOTFILES/bin
 
-# Add global Composer tools to path
-append_path ~/.composer/vendor/bin
+# Add locally installed binaries
+append_path $HOME/.local/bin
 
-# Use Python 3
-append_path /opt/homebrew/opt/python@3.8/bin
+# Add global Composer tools to path
+append_path $HOME/.composer/vendor/bin
+
+append_path $HOME/.bun/bin
+
+append_path /opt/homebrew/share/google-cloud-sdk/bin

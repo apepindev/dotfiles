@@ -1,23 +1,29 @@
 # .dotfiles
-alias dotfiles="z ~/.dotfiles"
+alias dotfiles="$DEFAULT_TEXT_EDITOR ~/.dotfiles"
 
 # Reload ZSH
 alias zshreload="source ~/.zshrc"
 
-# Zed
-alias z="zed -n"
+# Apps
+alias storm="open -na PhpStorm.app --args $@"
+alias z="zed -n $@"
+
+# Git
+alias gci="git checkout integration"
 
 # DNS flush
-alias flsuhdns="sudo dscacheutil -flushcache;sudo killall -HUP mDNSResponder; echo \"DNS flushed\""
+alias flushdns="sudo dscacheutil -flushcache;sudo killall -HUP mDNSResponder; echo \"DNS flushed\""
 
 # Docker
-alias docker-stop-all='docker stop $(docker ps -q)'
-alias docker-rm-containers='docker rm $(docker ps -aq)'
-alias docker-rm-images='docker rmi $(docker images -q)'
-alias docker-nuke='docker-stop-all && docker-rm-containers'
+alias dsa='docker stop $(docker ps -q)'
+alias dra='docker rm $(docker ps -aq)'
+alias dri='docker rmi $(docker images -q)'
+alias dsre='docker-stop-all && docker-rm-containers'
 
-# PHPStorm
-alias phpstorm='open -na "PhpStorm.app" --args "$@"'
+# K8s
+alias kctx='kubectx'
+alias kns='kubens'
+alias kc='kube-capacity'
 
 # Run php with Xdebug in CLI
 alias phpd="php -dxdebug.mode=debug -dxdebug.start_with_request=yes -dxdebug.client_host=127.0.0.1 -dxdebug.client_port=9003"

@@ -7,11 +7,6 @@ if test ! $(which omz); then
   /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/HEAD/tools/install.sh)"
 fi
 
-# Check if we have Powerlevel10k and install if we don't have it
-if test ! $(which p10k); then
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $HOME/.dotfiles/omz/themes/powerlevel10k
-fi
-
 # Check for Homebrew and install if we don't have it
 if test ! $(which brew); then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -20,13 +15,9 @@ if test ! $(which brew); then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-# Removes .zshrc from $HOME (if it exists) and symlinks the .zshrc file from the .dotfiles
+# Replace ~/.zshrc (if it exists) and symlink the dotfiles one
 rm -rf $HOME/.zshrc
 ln -sw $HOME/.dotfiles/.zshrc $HOME/.zshrc
-
-# And do the same for the Powerlevel10k config
-rm -rf $HOME/.p10k.zsh
-ln -sw $HOME/.dotfiles/.p10k.zsh $HOME/.p10k.zsh
 
 # Update Homebrew recipes
 brew update
@@ -34,6 +25,16 @@ brew update
 # Install all our dependencies with bundle (See Brewfile)
 brew tap homebrew/bundle
 brew bundle --file ./Brewfile
+
+# Symlink custom Ghostty config
+rm -rf .config/ghostty
+mkdir .config/ghostty
+ln -sw $HOME/.dotfiles/ghostty/config $HOME/.config/ghostty/config
+
+# Symlink custom Ghostty config
+rm -rf .config/starship
+mkdir .config/starship
+ln -sw $HOME/.dotfiles/starship/starship.toml $HOME/.config/starship.toml
 
 # Create directories
 mkdir $HOME/Code
