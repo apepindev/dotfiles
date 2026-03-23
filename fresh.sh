@@ -27,13 +27,13 @@ brew tap homebrew/bundle
 brew bundle --file ./Brewfile
 
 # Symlink custom Ghostty config
-rm -rf .config/ghostty
-mkdir .config/ghostty
+rm -rf $HOME/.config/ghostty
+mkdir $HOME/.config/ghostty
 ln -sw $HOME/.dotfiles/ghostty/config $HOME/.config/ghostty/config
 
 # Symlink custom Ghostty config
-rm -rf .config/starship
-mkdir .config/starship
+rm -rf $HOME/.config/starship
+mkdir $HOME/.config/starship
 ln -sw $HOME/.dotfiles/starship/starship.toml $HOME/.config/starship.toml
 
 # Create directories
