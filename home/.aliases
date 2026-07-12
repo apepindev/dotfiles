@@ -10,9 +10,6 @@ alias sudo='sudo '
 alias phpstorm='open -a ~/Applications/PhpStorm.app "`pwd`"'
 alias zed='open -a /Applications/Zed.app "`pwd`"'
 
-# Zoxide - A fast directory navigation tool
-alias cd="z"
-
 # Git
 alias nah="git reset --hard;git clean -df"
 alias uncommit="git reset --soft HEAD~1"
