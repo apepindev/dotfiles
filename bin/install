@@ -1,0 +1,76 @@
+#!/bin/sh
+
+# Idempotent bootstrap for these dotfiles. Safe to re-run.
+
+set -e
+
+DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
+export DOTFILES
+
+echo "Setting up your Mac from $DOTFILES ..."
+
+# --- oh-my-zsh -------------------------------------------------------------
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+  echo "Installing oh-my-zsh..."
+  RUNZSH=no KEEP_ZSHRC=yes /bin/sh -c \
+    "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/HEAD/tools/install.sh)"
+fi
+
+# --- Homebrew --------------------------------------------------------------
+if ! command -v brew >/dev/null 2>&1; then
+  echo "Installing Homebrew..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME/.zprofile"
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+# --- Symlink core config ---------------------------------------------------
+echo "Linking config..."
+mkdir -p "$HOME/.config/ghostty"
+ln -sfn "$DOTFILES/home/.zshrc"                   "$HOME/.zshrc"
+ln -sfn "$DOTFILES/config/ghostty/config"         "$HOME/.config/ghostty/config"
+ln -sfn "$DOTFILES/config/starship/starship.toml" "$HOME/.config/starship.toml"
+
+ln -sfn "$DOTFILES/config/git/gitconfig" "$HOME/.gitconfig"
+git config --global core.excludesfile    "$DOTFILES/config/git/gitignore_global"
+
+# --- Machine profile -------------------------------------------------------
+if [ ! -f "$DOTFILES/env/current" ]; then
+  printf "Which machine profile? [personal/work] "
+  read -r PROFILE
+else
+  PROFILE="$(cat "$DOTFILES/env/current")"
+  echo "Using existing profile: $PROFILE"
+fi
+
+case "$PROFILE" in
+  personal|work) ;;
+  *) echo "Unknown profile '$PROFILE' (expected personal or work)"; exit 1 ;;
+esac
+printf '%s\n' "$PROFILE" > "$DOTFILES/env/current"
+
+# The profile lives in its own private repo. Clone it if it's not here yet.
+if [ ! -d "$DOTFILES/env/$PROFILE" ] || [ -z "$(ls -A "$DOTFILES/env/$PROFILE" 2>/dev/null)" ]; then
+  printf "Git URL for the '%s' profile repo (blank to skip): " "$PROFILE"
+  read -r PROFILE_REPO
+  if [ -n "$PROFILE_REPO" ]; then
+    git clone "$PROFILE_REPO" "$DOTFILES/env/$PROFILE"
+  else
+    echo "Skipping profile clone — populate $DOTFILES/env/$PROFILE manually."
+  fi
+fi
+
+# --- Homebrew packages -----------------------------------------------------
+echo "Installing Homebrew packages..."
+brew update
+brew bundle --file "$DOTFILES/config/Brewfile" || echo "Warning: brew bundle reported errors"
+if [ -f "$DOTFILES/env/$PROFILE/Brewfile" ]; then
+  brew bundle --file "$DOTFILES/env/$PROFILE/Brewfile" || echo "Warning: profile brew bundle reported errors"
+fi
+
+# --- Profile bootstrap (repos, etc.) --------------------------------------
+if [ -x "$DOTFILES/env/$PROFILE/clone.sh" ]; then
+  "$DOTFILES/env/$PROFILE/clone.sh" || echo "Warning: profile clone.sh reported errors"
+fi
+
+echo "Done. Open a new shell or run: source ~/.zshrc"

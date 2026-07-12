@@ -1,0 +1,65 @@
+# Shared Homebrew packages — installed on every machine.
+# Machine-specific packages live in env/<profile>/Brewfile.
+
+# Taps
+tap "homebrew/cask"
+
+# CLI tools
+brew "fastfetch"
+brew "gh"
+brew "starship"
+brew "thefuck"
+brew "bun"
+
+brew "zoxide"
+brew "bat"
+brew "eza"
+brew "ripgrep"
+brew "fd"
+brew "git-delta"
+brew "fnm"
+brew "fzf"
+brew "direnv"
+brew "jq"
+brew "yq"
+brew "bottom"
+brew "gnupg"
+
+# PHP
+brew "composer"
+brew "php"
+
+# Casks — Fonts
+cask "font-fira-code-nerd-font"
+
+# Casks — Dev tools
+cask "boop"
+cask "bruno"
+cask "claude-code"
+cask "ghostty"
+cask "jetbrains-toolbox"
+cask "orbstack"
+cask "zed"
+
+# Casks — Utils
+cask "thaw"
+cask "zen"
+cask "monitorcontrol"
+cask "rectangle"
+
+# Casks — Quicklook plugins
+cask "apparency"
+cask "qlcolorcode"
+cask "qlstephen"
+cask "qlmarkdown"
+# cask "quicklook-json"
+cask "qlprettypatch"
+cask "quicklook-csv"
+cask "betterzip"
+cask "suspicious-package"
+
+# Casks — Elgato (stream/desk gear)
+cask "elgato-camera-hub"
+cask "elgato-control-center"
+cask "elgato-stream-deck"
+cask "elgato-wave-link"

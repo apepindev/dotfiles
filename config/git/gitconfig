@@ -1,0 +1,39 @@
+[core]
+	excludesfile = /Users/andrew/.dotfiles/config/git/gitignore_global
+	autocrlf = false
+	pager = delta
+
+[user]
+    email = hello@apepin.dev
+    name = Andrew Pepin
+	signingkey = 8CBE4DBD37AF703E
+
+[pull]
+    rebase = false
+
+[init]
+    defaultBranch = main
+
+[filter "lfs"]
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
+
+[merge]
+    conflictStyle = zdiff3
+
+[commit]
+    gpgsign = true
+
+[gpg]
+    program = /opt/homebrew/bin/gpg
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+	light = false
+	side-by-side = true
+	line-numbers = true
