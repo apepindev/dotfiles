@@ -3,6 +3,6 @@
 ._*
 
 # Machine-specific profiles live in their own private repos.
-# Only the empty env/ dir is tracked here.
-env/*
-!env/.gitkeep
+# Only the empty profiles/ dir is tracked here.
+profiles/*
+!profiles/.gitkeep

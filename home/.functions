@@ -1,3 +1,9 @@
+# Install/update dotfiles, then reload this shell in place (runs in the
+# interactive shell, so `exec zsh` replaces it cleanly — no nested-shell warning).
+function dotup() {
+  "$DOTFILES/bin/install" && exec zsh
+}
+
 # Open a man page in Preview.app as a PDF
 pman() {
   CMD_NAME=$1

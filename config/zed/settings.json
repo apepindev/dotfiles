@@ -35,7 +35,7 @@
   "base_keymap": "JetBrains",
   "theme": {
     "mode": "system",
-    "light": "One Dark",
+    "light": "One Light",
     "dark": "One Dark"
   },
   "telemetry": {
@@ -45,5 +45,8 @@
   "ui_font_size": 14.0,
   // "ui_font_family": "Fira Code",
   "buffer_font_size": 12.0,
-  "buffer_font_family": "Fira Code"
+  "buffer_font_family": "FiraCode Nerd Font Mono",
+  "terminal": {
+    "font_family": "FiraCode Nerd Font Mono"
+  }
 }

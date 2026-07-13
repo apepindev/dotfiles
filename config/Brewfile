@@ -1,8 +1,5 @@
 # Shared Homebrew packages — installed on every machine.
-# Machine-specific packages live in env/<profile>/Brewfile.
-
-# Taps
-tap "homebrew/cask"
+# Machine-specific packages live in profiles/<profile>/Brewfile.
 
 # CLI tools
 brew "fastfetch"
@@ -17,13 +14,17 @@ brew "eza"
 brew "ripgrep"
 brew "fd"
 brew "git-delta"
-brew "fnm"
 brew "fzf"
 brew "direnv"
 brew "jq"
 brew "yq"
 brew "bottom"
 brew "gnupg"
+
+# Version managers (inits live in home/.exports, guarded)
+brew "fnm"
+
+brew "rbenv"
 
 # PHP
 brew "composer"

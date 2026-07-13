@@ -1,12 +1,11 @@
 [core]
-	excludesfile = /Users/andrew/.dotfiles/config/git/gitignore_global
 	autocrlf = false
 	pager = delta
 
 [user]
-    email = hello@apepin.dev
     name = Andrew Pepin
-	signingkey = 8CBE4DBD37AF703E
+	# email + signingkey are machine-specific — set per profile via the
+	# [include] of ~/.gitconfig.local at the bottom of this file.
 
 [pull]
     rebase = false
@@ -37,3 +36,9 @@
 	light = false
 	side-by-side = true
 	line-numbers = true
+
+# Machine-specific identity (email) and GPG signing key. Symlinked from the
+# active profile's gitconfig.local by its install.sh. Missing file is ignored,
+# and being last means it overrides anything above.
+[include]
+	path = ~/.gitconfig.local

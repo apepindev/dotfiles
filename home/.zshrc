@@ -12,14 +12,14 @@ ZSH_THEME=""
 # Shared custom oh-my-zsh plugins/themes
 ZSH_CUSTOM="$DOTFILES/config/oh-my-zsh"
 
-# Which machine profile is active (personal | work). Written by bin/install.
-[ -r "$DOTFILES/env/current" ] && PROFILE="$(cat "$DOTFILES/env/current")"
+# Which machine profile is active (e.g. personal | work). Written by bin/install.
+[ -r "$DOTFILES/profiles/current" ] && PROFILE="$(cat "$DOTFILES/profiles/current")"
 
 # Plugins: shared base + per-machine additions.
 # NOTE: the plugins array MUST be set before sourcing oh-my-zsh.sh, so the
 # profile's plugins.zsh is sourced here (it appends with `plugins+=(...)`).
 plugins=(git macos docker)
-[ -n "$PROFILE" ] && [ -r "$DOTFILES/env/$PROFILE/plugins.zsh" ] && source "$DOTFILES/env/$PROFILE/plugins.zsh"
+[ -n "$PROFILE" ] && [ -r "$DOTFILES/profiles/$PROFILE/plugins.zsh" ] && source "$DOTFILES/profiles/$PROFILE/plugins.zsh"
 
 source "$ZSH/oh-my-zsh.sh"
 
@@ -30,11 +30,11 @@ done
 
 # Per-machine profile config (plugins.zsh already sourced above, so skip it)
 if [ -n "$PROFILE" ]; then
-  for file in "$DOTFILES/env/$PROFILE"/*.zsh; do
-    [ "$file" = "$DOTFILES/env/$PROFILE/plugins.zsh" ] && continue
+  for file in "$DOTFILES/profiles/$PROFILE"/*.zsh; do
+    [ "$file" = "$DOTFILES/profiles/$PROFILE/plugins.zsh" ] && continue
     [ -r "$file" ] && source "$file"
   done
-  append_path "$DOTFILES/env/$PROFILE/bin"
+  append_path "$DOTFILES/profiles/$PROFILE/bin"
 fi
 
 # Start Starship (always at the end)
