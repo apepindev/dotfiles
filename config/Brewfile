@@ -49,12 +49,7 @@ cask "rectangle"
 
 # Casks — Quicklook plugins
 cask "apparency"
-cask "qlcolorcode"
-cask "qlstephen"
 cask "qlmarkdown"
-# cask "quicklook-json"
-cask "qlprettypatch"
-cask "quicklook-csv"
 cask "betterzip"
 cask "suspicious-package"
 

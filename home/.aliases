@@ -1,5 +1,5 @@
 # .dotfiles
-alias dotfiles="$DEFAULT_TEXT_EDITOR -n ~/.dotfiles"
+alias dotfiles="$DEFAULT_TEXT_EDITOR $HOME/.dotfiles"
 
 # Reload ZSH
 alias zshreload="source ~/.zshrc"
@@ -8,14 +8,13 @@ alias zshreload="source ~/.zshrc"
 alias sudo='sudo '
 
 alias phpstorm='open -a ~/Applications/PhpStorm.app "`pwd`"'
-alias zed='open -a /Applications/Zed.app "`pwd`"'
 
 # Git
 alias nah="git reset --hard;git clean -df"
 alias uncommit="git reset --soft HEAD~1"
 
 alias o="open ."
-alias hostfile="sudo $DEFAULT_TEXT_EDITOR /etc/hosts"
+alias hostfile="sudo open -a /Applications/Zed.app /etc/hosts"
 alias sshconfig="$DEFAULT_TEXT_EDITOR ~/.ssh/config"
 alias ip="curl ifconfig.me/ip ; echo"
 

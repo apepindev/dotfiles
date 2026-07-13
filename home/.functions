@@ -1,5 +1,5 @@
 # Open a man page in Preview.app as a PDF
-pman () {
+pman() {
   CMD_NAME=$1
   whereis -qm "$CMD_NAME" | xargs cat | mandoc -T pdf | open -f -a /System/Applications/Preview.app
 }
