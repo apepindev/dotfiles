@@ -30,11 +30,14 @@ done
 
 # Per-machine profile config (plugins.zsh already sourced above, so skip it)
 if [ -n "$PROFILE" ]; then
-  for file in "$DOTFILES/profiles/$PROFILE"/*.zsh; do
-    [ "$file" = "$DOTFILES/profiles/$PROFILE/plugins.zsh" ] && continue
+  export DOTFILES_PROFILE=$PROFILE
+  export DOTFILES_PROFILE_DIR="$DOTFILES/profiles/$PROFILE"
+
+  for file in "$DOTFILES_PROFILE_DIR"/*.zsh; do
+    [ "$file" = "$DOTFILES_PROFILE_DIR/plugins.zsh" ] && continue
     [ -r "$file" ] && source "$file"
   done
-  append_path "$DOTFILES/profiles/$PROFILE/bin"
+  append_path "$DOTFILES_PROFILE_DIR/bin"
 fi
 
 # Start Starship (always at the end)
