@@ -1,0 +1,145 @@
+#!/bin/sh
+
+# Idempotent bootstrap for these dotfiles. Safe to re-run.
+
+set -e
+
+DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
+export DOTFILES
+
+# --- Pretty output ---------------------------------------------------------
+# Colours only when stdout is a terminal; otherwise the vars stay empty so
+# logs/pipes stay clean.
+if [ -t 1 ]; then
+  BOLD=$(tput bold); DIM=$(tput dim); RESET=$(tput sgr0)
+  BLUE=$(tput setaf 4); GREEN=$(tput setaf 2)
+  YELLOW=$(tput setaf 3); CYAN=$(tput setaf 6)
+else
+  BOLD=; DIM=; RESET=; BLUE=; GREEN=; YELLOW=; CYAN=
+fi
+
+STEP=0
+TOTAL=6
+step() {
+  STEP=$((STEP + 1))
+  printf '\n%s%s──[ %d/%d ]─ %s%s\n' "$BOLD" "$BLUE" "$STEP" "$TOTAL" "$1" "$RESET"
+}
+info() { printf '   %s•%s %s\n' "$DIM" "$RESET" "$1"; }
+ok()   { printf '   %s✓%s %s\n' "$GREEN" "$RESET" "$1"; }
+warn() { printf '   %s!%s %s\n' "$YELLOW" "$RESET" "$1"; }
+
+printf '%s%s\n' "$BOLD$CYAN" "$RESET"
+printf '%s%s  ❯ dotfiles bootstrap%s\n' "$BOLD" "$CYAN" "$RESET"
+printf '%s    %s%s\n' "$DIM" "$DOTFILES" "$RESET"
+
+# --- oh-my-zsh -------------------------------------------------------------
+step "oh-my-zsh"
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+  info "Installing oh-my-zsh..."
+  RUNZSH=no KEEP_ZSHRC=yes /bin/sh -c \
+    "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/HEAD/tools/install.sh)"
+  ok "oh-my-zsh installed"
+else
+  ok "already installed"
+fi
+
+# --- Homebrew --------------------------------------------------------------
+step "Homebrew"
+if ! command -v brew >/dev/null 2>&1; then
+  info "Installing Homebrew..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME/.zprofile"
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+  ok "Homebrew installed"
+else
+  ok "already installed"
+fi
+
+# --- Symlink core config ---------------------------------------------------
+step "Linking core config"
+mkdir -p "$HOME/.config/ghostty" "$HOME/.config/starship" "$HOME/.config/zed"
+ln -sfn "$DOTFILES/home/.zshrc"                   "$HOME/.zshrc"
+ln -sfn "$DOTFILES/config/ghostty/config"         "$HOME/.config/ghostty/config"
+ln -sfn "$DOTFILES/config/starship/starship.toml" "$HOME/.config/starship/starship.toml"
+ln -sfn "$DOTFILES/config/zed/settings.json"      "$HOME/.config/zed/settings.json"
+ln -sfn "$DOTFILES/config/git/gitconfig"          "$HOME/.gitconfig"
+ln -sfn "$DOTFILES/config/git/gitignore_global"   "$HOME/.gitignore_global"
+ok "zsh, ghostty, starship, zed, git linked into place"
+
+# --- Machine profile -------------------------------------------------------
+# The active profile is remembered in profiles/current. On a fresh machine no
+# profiles exist yet (they're private repos cloned below), so we can't rely on
+# the directory listing alone — we offer any profiles already present but also
+# accept a brand-new name, which falls through to the clone step.
+step "Machine profile"
+PROFILES_DIR="$DOTFILES/profiles"
+mkdir -p "$PROFILES_DIR"
+
+if [ -f "$PROFILES_DIR/current" ]; then
+  PROFILE="$(cat "$PROFILES_DIR/current")"
+  ok "using existing profile: ${BOLD}$PROFILE${RESET}"
+else
+  choices=""
+  for d in "$PROFILES_DIR"/*/; do
+    [ -d "$d" ] && choices="$choices $(basename "$d")"
+  done
+  choices="${choices# }"
+  if [ -n "$choices" ]; then
+    printf '   %s?%s Which machine profile? [%s, or a new name] ' "$CYAN" "$RESET" "$choices"
+  else
+    printf '   %s?%s Which machine profile? (a new name to bootstrap) ' "$CYAN" "$RESET"
+  fi
+  read -r PROFILE
+  [ -n "$PROFILE" ] || { warn "no profile given"; exit 1; }
+  printf '%s\n' "$PROFILE" > "$PROFILES_DIR/current"
+fi
+
+# The profile lives in its own private repo. Clone it if it's not here yet.
+if [ ! -d "$PROFILES_DIR/$PROFILE" ] || [ -z "$(ls -A "$PROFILES_DIR/$PROFILE" 2>/dev/null)" ]; then
+  printf '   %s?%s Git URL for the "%s" profile repo (blank to skip): ' "$CYAN" "$RESET" "$PROFILE"
+  read -r PROFILE_REPO
+  if [ -n "$PROFILE_REPO" ]; then
+    git clone "$PROFILE_REPO" "$PROFILES_DIR/$PROFILE"
+    ok "profile repo cloned"
+  else
+    warn "skipping profile clone — populate $PROFILES_DIR/$PROFILE manually"
+  fi
+fi
+
+# --- Homebrew packages -----------------------------------------------------
+step "Homebrew packages"
+info "brew update..."
+brew update >/dev/null
+info "installing shared Brewfile..."
+brew bundle --file "$DOTFILES/config/Brewfile" || warn "brew bundle reported errors"
+if [ -f "$DOTFILES/profiles/$PROFILE/Brewfile" ]; then
+  info "installing $PROFILE Brewfile..."
+  brew bundle --file "$DOTFILES/profiles/$PROFILE/Brewfile" || warn "profile brew bundle reported errors"
+fi
+ok "packages installed"
+
+# --- Profile install hook (runs last, so brew tools are available) --------
+# The active profile's install.sh does everything machine-specific — symlinks,
+# cloning extra repos, other setup — with no constraints from the core.
+# $DOTFILES is exported above; $0 resolves to the hook so it can find its files.
+step "$PROFILE profile hook"
+if [ -x "$DOTFILES/profiles/$PROFILE/install.sh" ]; then
+  info "running profiles/$PROFILE/install.sh..."
+  "$DOTFILES/profiles/$PROFILE/install.sh" || warn "profile install.sh reported errors"
+  ok "profile hook complete"
+else
+  info "no install.sh for $PROFILE — nothing to run"
+fi
+
+# --- Done ------------------------------------------------------------------
+# This script is a child process, so it can't reload the shell you launched it
+# from — exec-ing zsh here would only nest a new shell under it, which the
+# terminal then flags as "a process is still running" on tab close. Instead we
+# hand back a clean screen and the one command that reloads in place. Running
+# `./bin/install && exec zsh` does the whole thing automatically and cleanly.
+printf '%s%s✨  All done!%s  Dotfiles set up for the %s%s%s profile.\n' \
+  "$BOLD" "$GREEN" "$RESET" "$BOLD" "$PROFILE" "$RESET"
+printf '\n%sReload this shell to apply everything:%s  %s%sexec zsh%s\n' \
+  "$BOLD" "$RESET" "$BOLD" "$GREEN" "$RESET"
+printf '%s   tip: next time run  %s./bin/install && exec zsh%s  to reload automatically%s\n' \
+  "$DIM" "$RESET$DIM" "$RESET$DIM" "$RESET"

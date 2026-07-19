@@ -1,0 +1,44 @@
+[core]
+	autocrlf = false
+	pager = delta
+
+[user]
+    name = Andrew Pepin
+	# email + signingkey are machine-specific — set per profile via the
+	# [include] of ~/.gitconfig.local at the bottom of this file.
+
+[pull]
+    rebase = false
+
+[init]
+    defaultBranch = main
+
+[filter "lfs"]
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
+
+[merge]
+    conflictStyle = zdiff3
+
+[commit]
+    gpgsign = true
+
+[gpg]
+    program = /opt/homebrew/bin/gpg
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+	light = false
+	side-by-side = true
+	line-numbers = true
+
+# Machine-specific identity (email) and GPG signing key. Symlinked from the
+# active profile's gitconfig.local by its install.sh. Missing file is ignored,
+# and being last means it overrides anything above.
+[include]
+	path = ~/.gitconfig.local

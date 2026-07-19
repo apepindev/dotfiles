@@ -1,0 +1,8 @@
+.DS_Store
+.DS_Store?
+._*
+
+# Machine-specific profiles live in their own private repos.
+# Only the empty profiles/ dir is tracked here.
+profiles/*
+!profiles/.gitkeep

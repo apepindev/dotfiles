@@ -1,0 +1,26 @@
+# Install/update dotfiles, then reload this shell in place (runs in the
+# interactive shell, so `exec zsh` replaces it cleanly — no nested-shell warning).
+function dotup() {
+  "$DOTFILES/bin/install" && exec zsh
+}
+
+# Open a man page in Preview.app as a PDF
+pman() {
+  CMD_NAME=$1
+  whereis -qm "$CMD_NAME" | xargs cat | mandoc -T pdf | open -f -a /System/Applications/Preview.app
+}
+
+# Create a directory and cd into it
+function mkd() {
+   mkdir -p "$@" && cd "$@"
+}
+
+# Prune local branches that are no longer present on the remote
+function git-prune-local() {
+  git fetch -p && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -D
+}
+
+# Dig for DNS records
+function digga() {
+	dig +nocmd "$1" any +multiline +noall +answer
+}

@@ -1,6 +1,7 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 [aws]
+disabled = true
 symbol = " "
 # format = '\[[$symbol($profile )(\($region\))]($style)\]'
 
@@ -99,7 +100,7 @@ symbol = " "
 
 [gcloud]
 symbol = " "
-format = 'on [$symbol$account(@$domain)(\($project\))]($style)'
+format = 'on [$symbol$account(@$domain)(\($project\))]($style) '
 # format = ''\[[$symbol$account(@$domain)(\($region\))]($style)\]''
 
 [git_branch]
