@@ -33,6 +33,9 @@ brew "php"
 # Casks — Fonts
 cask "font-fira-code-nerd-font"
 
+# Casks — Apps
+cask "telegram"
+
 # Casks — Dev tools
 cask "boop"
 cask "bruno"
@@ -51,7 +54,6 @@ cask "rectangle"
 # Casks — Quicklook plugins
 cask "apparency"
 cask "qlmarkdown"
-cask "betterzip"
 cask "suspicious-package"
 
 # Casks — Elgato (stream/desk gear)
