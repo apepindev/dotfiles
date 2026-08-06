@@ -54,7 +54,6 @@ cask "rectangle"
 # Casks — Quicklook plugins
 cask "apparency"
 cask "qlmarkdown"
-cask "betterzip"
 cask "suspicious-package"
 
 # Casks — Elgato (stream/desk gear)

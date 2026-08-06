@@ -1,6 +1,6 @@
 #macos-icon = blueprint
 
-theme = Snazzy
+theme = Snazzy Soft
 
 window-height = 35
 window-width = 120
@@ -9,6 +9,8 @@ window-padding-y = 12
 
 background-opacity = 0.9
 background-blur = true
+
+foreground = #f5f5f5
 
 font-family = "FiraCode Nerd Font Mono"
 font-size = 12
