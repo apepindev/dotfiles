@@ -3,6 +3,9 @@
 
 input=$(cat)
 
+# Force '.' as decimal separator regardless of the user's locale
+export LC_ALL=en_US.UTF-8
+
 # ── Colors ──
 CYAN='\033[36m'
 GREEN='\033[32m'
@@ -13,16 +16,29 @@ DIM='\033[2m'
 BOLD='\033[1m'
 RESET='\033[0m'
 
+# ── Icons ──
+# Nerd Font glyphs; off by default while testing whether they cause dropped
+# characters on redraw. Enable with CLAUDE_STATUSLINE_ICONS=1 or set the default here.
+if [ "${CLAUDE_STATUSLINE_ICONS:-0}" = 1 ]; then
+  ICON_REPO=' ' ICON_BRANCH=' ' ICON_CTX='󰟷 ' ICON_MODEL='󰧑 '
+else
+  ICON_REPO='' ICON_BRANCH='' ICON_CTX='' ICON_MODEL=''
+fi
+
 # ── Truecolor helper ──
 rgb() { printf '\033[38;2;%d;%d;%dm' "$1" "$2" "$3"; }
 
-# ── Parse JSON fields ──
-model=$(echo "$input" | jq -r '.model.display_name // "Unknown"')
-used=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
-cost=$(echo "$input" | jq -r '.cost.total_cost_usd // 0')
-lines_add=$(echo "$input" | jq -r '.cost.total_lines_added // 0')
-lines_del=$(echo "$input" | jq -r '.cost.total_lines_removed // 0')
-cwd=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // ""')
+# ── Parse JSON fields (one jq call; \x1f separator so empty fields don't collapse like tabs would) ──
+IFS=$'\x1f' read -r model used cost lines_add lines_del cwd < <(
+  echo "$input" | jq -r '[
+    .model.display_name // "Unknown",
+    .context_window.used_percentage // "",
+    .cost.total_cost_usd // 0,
+    .cost.total_lines_added // 0,
+    .cost.total_lines_removed // 0,
+    .workspace.current_dir // .cwd // ""
+  ] | map(tostring) | join("\u001f")'
+)
 
 # ── Git info ──
 branch=""
@@ -64,17 +80,14 @@ if [ -n "$used" ]; then
   done
   bar="${bar}${RESET}"
 
-  if [ "$used_int" -ge 90 ]; then status_icon="󰟷"
-  elif [ "$used_int" -ge 50 ]; then status_icon="󰟷"
-  else status_icon="󰟷"; fi
-
   if [ "$used_int" -ge 90 ]; then pct_color="$RED"
   elif [ "$used_int" -ge 50 ]; then pct_color="$YELLOW"
   else pct_color="$GREEN"; fi
 
-  ctx_part="${pct_color}${status_icon}${RESET} ${bar} ${pct_color}${used_int}%${RESET}"
+  # Fixed width (%3d) so the line never changes length as the number grows
+  ctx_part="${pct_color}${ICON_CTX}${RESET}${bar} ${pct_color}$(printf '%3d%%' "$used_int")${RESET}"
 else
-  ctx_part="󰟷 \033[38;2;60;60;60m░░░░░░░░░░░░░░░░░░░░${RESET} --%"
+  ctx_part="${ICON_CTX}\033[38;2;60;60;60m░░░░░░░░░░░░░░░░░░░░${RESET}  --%"
 fi
 
 # ── Cost ──
@@ -85,11 +98,11 @@ velocity="${GREEN}+${lines_add}${RESET} ${RED}-${lines_del}${RESET}"
 
 # ── Single line ──
 out=""
-[ -n "$repo" ] && out="${BOLD}${YELLOW} ${repo}${RESET}"
-[ -n "$branch" ] && out="${out:+$out }${BOLD}${CYAN} (${branch})${RESET}"
+[ -n "$repo" ] && out="${BOLD}${YELLOW}${ICON_REPO}${repo}${RESET}"
+[ -n "$branch" ] && out="${out:+$out }${BOLD}${CYAN}${ICON_BRANCH}(${branch})${RESET}"
 out="${out:+$out ${DIM}|${RESET} }${ctx_part}"
 out="${out} ${DIM}|${RESET} ${cost_part}"
 out="${out} ${DIM}|${RESET} ${velocity}"
-out="${out} ${DIM}|${RESET} ${MAGENTA}󰧑 ${model}${RESET}"
+out="${out} ${DIM}|${RESET} ${MAGENTA}${ICON_MODEL}${model}${RESET}"
 
 printf '%b' "$out"
