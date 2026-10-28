@@ -42,3 +42,6 @@ fi
 
 # Start Starship (always at the end)
 eval "$(starship init zsh)"
+
+# bun completions
+[ -s "/Users/andrew/.bun/_bun" ] && source "/Users/andrew/.bun/_bun"

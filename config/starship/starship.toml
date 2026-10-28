@@ -60,7 +60,8 @@ symbol = " "
 # format = '\[[$symbol($version)]($style)\]'
 
 [direnv]
-# format = '\[[$symbol$loaded/$allowed]($style)\]'
+# symbol = "󱀮 "
+format = '\[[$symbol$loaded/$allowed]($style)\]'
 
 [directory]
 read_only = " 󰌾"
