@@ -1,5 +1,5 @@
 # Prepend a directory to $PATH if it isn't already there
-function append_path {
+function prepend_path {
   case ":$PATH:" in
     *":$1:"*) :;;        # already there
     *) PATH="$1:$PATH";; # prepend
@@ -7,9 +7,9 @@ function append_path {
 }
 
 # Shared PATH entries
-append_path "$DOTFILES/bin"
-append_path "$HOME/.local/bin"
-append_path "$HOME/.composer/vendor/bin"
+prepend_path "$DOTFILES/bin"
+prepend_path "$HOME/.local/bin"
+prepend_path "$HOME/.composer/vendor/bin"
 
 # Editor
 export DEFAULT_TEXT_EDITOR="zed"
@@ -28,7 +28,7 @@ command -v zoxide &> /dev/null && eval "$(zoxide init zsh)"
 # pyenv
 export PYENV_ROOT="$HOME/.pyenv"
 if command -v pyenv &> /dev/null; then
-  [[ -d "$PYENV_ROOT/bin" ]] && append_path "$PYENV_ROOT/bin"
+  [[ -d "$PYENV_ROOT/bin" ]] && prepend_path "$PYENV_ROOT/bin"
   eval "$(pyenv init - zsh)"
   command -v pyenv-virtualenv-init &> /dev/null && eval "$(pyenv virtualenv-init -)"
 fi
@@ -41,7 +41,7 @@ command -v fnm &> /dev/null && eval "$(fnm env --use-on-cd)"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
-append_path "$BUN_INSTALL/bin"
+prepend_path "$BUN_INSTALL/bin"
 [ -s "$BUN_INSTALL/_bun" ] && source "$BUN_INSTALL/_bun"
 
 # thefuck — lazy-load: `thefuck --alias` spawns Python (~130ms), so defer it to

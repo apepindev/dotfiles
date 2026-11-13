@@ -30,7 +30,7 @@ reloading a shell (`source ~/.zshrc`) and checking the shell behaves.
    `profiles/<profile>/bin` to PATH.
 6. `starship init` last (starship is the prompt; `ZSH_THEME=""` disables the oh-my-zsh theme).
 
-`append_path` (defined in `home/.exports`) prepends to PATH only if absent — use it instead of
+`prepend_path` (defined in `home/.exports`) prepends to PATH only if absent — use it instead of
 raw `PATH=` assignments so re-sourcing `.zshrc` stays idempotent.
 
 ## Files are symlinked, not copied

@@ -37,7 +37,7 @@ if [ -n "$PROFILE" ]; then
     [ "$file" = "$DOTFILES_PROFILE_DIR/plugins.zsh" ] && continue
     [ -r "$file" ] && source "$file"
   done
-  append_path "$DOTFILES_PROFILE_DIR/bin"
+  prepend_path "$DOTFILES_PROFILE_DIR/bin"
 fi
 
 # Start Starship (always at the end)
