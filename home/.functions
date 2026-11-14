@@ -1,6 +1,6 @@
 # Install/update dotfiles, then reload this shell in place (runs in the
 # interactive shell, so `exec zsh` replaces it cleanly — no nested-shell warning).
-function dotup() {
+function dotsync() {
   "$DOTFILES/bin/install" && exec zsh
 }
 
