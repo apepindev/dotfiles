@@ -1,0 +1,29 @@
+[
+  {
+    "property": "localdev.tape.height",
+    "label": "Tape height (CSS length, default 4px)",
+    "type": "string",
+    "defaultValue": "4px",
+    "placeholder": "4px"
+  },
+  {
+    "property": "localdev.tape.color1",
+    "label": "First stripe color",
+    "type": "string",
+    "defaultValue": "#f5c518",
+    "placeholder": "#f5c518"
+  },
+  {
+    "property": "localdev.tape.color2",
+    "label": "Second stripe color",
+    "type": "string",
+    "defaultValue": "#111111",
+    "placeholder": "#111111"
+  },
+  {
+    "property": "localdev.tape.full_tab",
+    "label": "Stripe the whole tab instead of the bottom edge",
+    "type": "checkbox",
+    "defaultValue": false
+  }
+]

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <pattern id="tape" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="8" height="8" fill="#f5c518"/>
+      <rect width="4" height="8" fill="#111"/>
+    </pattern>
+    <clipPath id="r"><rect x="2" y="10" width="28" height="12" rx="3"/></clipPath>
+  </defs>
+  <rect x="2" y="10" width="28" height="12" rx="3" fill="url(#tape)" clip-path="url(#r)"/>
+</svg>

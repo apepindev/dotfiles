@@ -67,6 +67,22 @@ ln -sfn "$DOTFILES/config/git/gitignore_global"         "$HOME/.gitignore_global
 ln -sfn "$DOTFILES/config/claude/statusline.sh"         "$HOME/.claude/statusline.sh"
 ok "zsh, ghostty, starship, zed, git, claude linked into place"
 
+# Zen keeps prefs and userChrome.css in a randomly named profile folder. The
+# installs.ini "Default=" line names the profile Zen actually launches.
+ZEN_DIR="$HOME/Library/Application Support/zen"
+ZEN_PROFILE="$(sed -n 's/^Default=//p' "$ZEN_DIR/installs.ini" 2>/dev/null | head -n 1)"
+if [ -n "$ZEN_PROFILE" ] && [ -d "$ZEN_DIR/$ZEN_PROFILE" ]; then
+  mkdir -p "$ZEN_DIR/$ZEN_PROFILE/chrome"
+  ln -sfn "$DOTFILES/config/zen/user.js"               "$ZEN_DIR/$ZEN_PROFILE/user.js"
+  ln -sfn "$DOTFILES/config/zen/chrome/userChrome.css" "$ZEN_DIR/$ZEN_PROFILE/chrome/userChrome.css"
+  # userChrome.css imports the Zen mod's CSS, so the tape works before the
+  # mod is published to the Zen mods store.
+  ln -sfn "$DOTFILES/config/zen/mod/chrome.css"        "$ZEN_DIR/$ZEN_PROFILE/chrome/local-dev-tape.css"
+  ok "zen user.js and userChrome.css linked into $ZEN_PROFILE"
+else
+  warn "no Zen profile yet. Launch Zen once, then re-run bin/install"
+fi
+
 # --- Machine profile -------------------------------------------------------
 # The active profile is remembered in profiles/current. On a fresh machine no
 # profiles exist yet (they're private repos cloned below), so we can't rely on

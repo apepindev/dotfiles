@@ -1,0 +1,33 @@
+/* Local Dev Tape: hazard tape on tabs for local dev sites.
+   Needs the Local Dev add-on, which prefixes local page titles with U+200B.
+   Mod settings arrive as CSS variables (string prefs) and about:config prefs
+   (checkbox prefs); the fallbacks below apply when the mod has no settings,
+   such as when this file is loaded from userChrome.css. */
+
+.tabbrowser-tab[label^="\200B"] .tab-background {
+  position: relative;
+  overflow: hidden;
+}
+
+.tabbrowser-tab[label^="\200B"] .tab-background::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: var(--localdev-tape-height, 4px);
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--localdev-tape-color1, #f5c518) 0 6px,
+    var(--localdev-tape-color2, #111111) 6px 12px
+  );
+  pointer-events: none;
+}
+
+/* "Stripe the whole tab": faint tape across the full tab background. */
+@media -moz-pref("localdev.tape.full_tab") {
+  .tabbrowser-tab[label^="\200B"] .tab-background::after {
+    top: 0;
+    height: auto;
+    opacity: 0.18;
+  }
+}

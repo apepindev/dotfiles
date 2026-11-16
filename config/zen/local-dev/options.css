@@ -1,0 +1,55 @@
+:root {
+  --bg: #ffffff;
+  --fg: #1c1b22;
+  --muted: #5b5b66;
+  --border: #cfcfd8;
+  --field: #f9f9fb;
+  --accent: #f5c518;
+  --accent-fg: #111111;
+  --error: #c50042;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #2b2a33;
+    --fg: #fbfbfe;
+    --muted: #bfbfc9;
+    --border: #52525e;
+    --field: #1c1b22;
+    --error: #ff848b;
+  }
+}
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font: 14px/1.5 system-ui, sans-serif;
+  margin: 16px;
+  /* Fixed width so the toolbar popup sizes itself to the content. */
+  width: 420px;
+}
+.row { display: flex; align-items: center; gap: 8px; margin: 12px 0; }
+.heading { display: block; font-weight: 600; margin-top: 20px; }
+.hint { color: var(--muted); margin: 4px 0 8px; }
+code { font-family: ui-monospace, monospace; }
+textarea, input[type="text"] {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px;
+  font: 13px/1.5 ui-monospace, monospace;
+  background: var(--field);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+button {
+  padding: 6px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  font: inherit;
+  cursor: pointer;
+}
+button.secondary { background: transparent; color: var(--fg); border-color: var(--border); }
+#status { color: var(--muted); }
+#status.error { color: var(--error); }
