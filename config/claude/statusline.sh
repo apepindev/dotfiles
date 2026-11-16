@@ -48,6 +48,10 @@ if [ -n "$cwd" ]; then
   repo=$(basename "$(git -C "$cwd" --no-optional-locks rev-parse --show-toplevel 2>/dev/null)" 2>/dev/null)
 fi
 
+# ── Auth'd account email (read from the config file; `claude auth status` is too slow per redraw) ──
+claude_json="${CLAUDE_CONFIG_DIR:-$HOME}/.claude.json"
+email=$(jq -r '.oauthAccount.emailAddress // empty' "$claude_json" 2>/dev/null)
+
 # ── Context bar: RGB gradient, full blocks only ──
 BAR_WIDTH=20
 
@@ -104,5 +108,6 @@ out="${out:+$out ${DIM}|${RESET} }${ctx_part}"
 out="${out} ${DIM}|${RESET} ${cost_part}"
 out="${out} ${DIM}|${RESET} ${velocity}"
 out="${out} ${DIM}|${RESET} ${MAGENTA}${ICON_MODEL}${model}${RESET}"
+[ -n "$email" ] && out="${out} ${DIM}|${RESET} ${DIM}${email}${RESET}"
 
 printf '%b' "$out"
