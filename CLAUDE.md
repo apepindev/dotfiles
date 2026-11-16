@@ -36,7 +36,7 @@ raw `PATH=` assignments so re-sourcing `.zshrc` stays idempotent.
 ## Files are symlinked, not copied
 
 `bin/install` symlinks `home/.zshrc` → `~/.zshrc`, the Ghostty/starship configs into `~/.config`,
-and points `git core.excludesfile` at `config/git/gitignore_global`. Editing files in this repo
+and links `config/git/gitignore_global` to `~/.config/git/ignore`, the global ignore file git reads when `core.excludesfile` is unset. Editing files in this repo
 edits the live config directly; changes take effect on next shell reload. `bin/install` is
 idempotent — re-run it after adding a new symlink or changing bootstrap steps.
 

@@ -35,3 +35,6 @@ yarn-error.log
 
 # Claude
 .claude/settings.local.json
+
+# Claude Code per-project local settings
+**/.claude/settings.local.json

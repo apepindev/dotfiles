@@ -84,7 +84,7 @@ git clone git@github.com:apepindev/dotfiles.git ~/.dotfiles
 
 - install oh-my-zsh and Homebrew if missing,
 - symlink `~/.zshrc`, the Ghostty / starship / Zed configs, and `~/.gitconfig` +
-  `~/.gitignore_global`,
+  `~/.config/git/ignore` (git's default global ignore file),
 - prompt for the machine profile (any already present, or a new name) and record it
   in `profiles/current`,
 - clone that profile's private repo into `profiles/<profile>` (prompts for the URL),

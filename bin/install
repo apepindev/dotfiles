@@ -57,13 +57,13 @@ fi
 
 # --- Symlink core config ---------------------------------------------------
 step "Linking core config"
-mkdir -p "$HOME/.config/ghostty" "$HOME/.config/starship" "$HOME/.config/zed"
+mkdir -p "$HOME/.config/ghostty" "$HOME/.config/starship" "$HOME/.config/zed" "$HOME/.config/git"
 ln -sfn "$DOTFILES/home/.zshrc"                         "$HOME/.zshrc"
 ln -sfn "$DOTFILES/config/ghostty/config"               "$HOME/.config/ghostty/config"
 ln -sfn "$DOTFILES/config/starship/starship.toml"       "$HOME/.config/starship/starship.toml"
 ln -sfn "$DOTFILES/config/zed/settings.json"            "$HOME/.config/zed/settings.json"
 ln -sfn "$DOTFILES/config/git/gitconfig"                "$HOME/.gitconfig"
-ln -sfn "$DOTFILES/config/git/gitignore_global"         "$HOME/.gitignore_global"
+ln -sfn "$DOTFILES/config/git/gitignore_global"         "$HOME/.config/git/ignore"
 ln -sfn "$DOTFILES/config/claude/statusline.sh"         "$HOME/.claude/statusline.sh"
 ok "zsh, ghostty, starship, zed, git, claude linked into place"
 
@@ -119,7 +119,22 @@ if [ ! -d "$PROFILES_DIR/$PROFILE" ] || [ -z "$(ls -A "$PROFILES_DIR/$PROFILE" 2
     git clone "$PROFILE_REPO" "$PROFILES_DIR/$PROFILE"
     ok "profile repo cloned"
   else
-    warn "skipping profile clone — populate $PROFILES_DIR/$PROFILE manually"
+    # No repo yet: scaffold an empty profile that mirrors the core layout.
+    # Existing files are never overwritten.
+    P="$PROFILES_DIR/$PROFILE"
+    mkdir -p "$P/bin"
+    touch "$P/bin/.gitkeep"
+    [ -e "$P/plugins.zsh" ] || printf '# Extra oh-my-zsh plugins, sourced before oh-my-zsh.sh\n# plugins+=()\n' > "$P/plugins.zsh"
+    for f in aliases exports paths functions; do
+      [ -e "$P/$f.zsh" ] || printf '# %s profile: %s\n' "$PROFILE" "$f" > "$P/$f.zsh"
+    done
+    [ -e "$P/Brewfile" ] || printf '# Packages for the %s profile, beyond config/Brewfile\n' "$PROFILE" > "$P/Brewfile"
+    if [ ! -e "$P/install.sh" ]; then
+      printf '#!/bin/sh\n# Machine-specific setup for the %s profile. Runs last in bin/install.\nset -e\nPROFILE_DIR="$(cd "$(dirname "$0")" && pwd)"\n\n# [ -f "$PROFILE_DIR/gitconfig.local" ] && ln -sfn "$PROFILE_DIR/gitconfig.local" "$HOME/.gitconfig.local"\n' "$PROFILE" > "$P/install.sh"
+      chmod +x "$P/install.sh"
+    fi
+    [ -d "$P/.git" ] || git -C "$P" init -q
+    ok "scaffolded new profile at $P (git repo, no remote yet)"
   fi
 fi
 
